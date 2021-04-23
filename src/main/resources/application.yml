@@ -1,0 +1,22 @@
+# 数据库连接设置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/aucmall?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: 123456
+  mvc:
+    format:
+      date: yyyy-MM-dd
+  thymeleaf:
+    cache: false
+
+# mybatis 配置
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+
+# mybatis  日志sql信息输出
+logging:
+  level:
+    com.jteam03.springboot.demo.demo.mapper: debug
+

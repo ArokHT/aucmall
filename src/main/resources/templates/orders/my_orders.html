@@ -1,0 +1,272 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="mall/header::head-fragment('NewBee商城-个人中心','personal')">
+</head>
+<link th:href="@{/mall/css/bootstrap-modal.css}" rel="stylesheet">
+<link rel="stylesheet" th:href="@{mall/css/common.css}">
+<link rel="stylesheet" th:href="@{mall/css/iconfont.css}">
+<link rel="stylesheet" th:href="@{mall/styles/cart.css}">
+<link rel="stylesheet" th:href="@{'/mall/styles/search.css'}">
+<body>
+<!-- nav -->
+<nav th:replace="mall/header::nav-fragment"></nav>
+<header th:replace="mall/header::header-fragment"></header>
+
+
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+
+        <!-- sidebar -->
+        <div th:replace="orders/orders-sidebar::sidebar-fragment"></div>
+
+        <div id="cart" style="width: 978px; float: right">
+            <div class="cart_bg" style="padding-bottom: 0">
+                <div class="list center" style="width: 978px; height: 470px">
+                    <div class="top2 center" style="width: 978px;">
+                        <div class="sub_top fl">商品名称</div>
+                        <div class="sub_top fl">成交价</div>
+                        <div class="sub_top fl" style="margin-left: 0">收货地址</div>
+                        <div class="sub_top fl" style="margin-left: 200px">状态</div>
+                        <div class="sub_top fl" style="margin-left: 50px">操作</div>
+                        <div class="clear"></div>
+                        <th:block th:each="item : ${myBought}">
+                            <div class="content2 center" style="width: 978px; height: 50px">
+                                <div class="sub_content fl" style="width: 165px; height: 50px; line-height: 50px" th:text="${item.name}">商品名称</div>
+                                <div class="sub_content fl" style="width: 40px; height: 50px; line-height: 50px" th:text="${item.dealPrice+'元'}">1299元</div>
+                                <div class="sub_content fl" style="width: 300px; height: 50px; line-height: 50px" th:text="${item.address}">1299元</div>
+                                <div class="sub_content fl" style="height: 50px; line-height: 50px; margin-left: 0" th:text="${item.status}">1299元</div>
+                                <th:block th:if="${item.status=='未收货'}">
+                                    <span style="margin-left: 50px;">
+                                        <button type="button" class="btn btn-primary" id="confirm" style="width: 60px; background: #3a99a2; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:;'">确认收货</button>
+                                    </span>
+                                </th:block>
+                                <th:block th:if="${item.status=='已收货'}">
+                                    <span style="margin-left: 50px;">
+                                        <button type="button" class="btn btn-primary" id="toComment" style="width: 60px; background: #eccb1d; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:;'">去评价</button>
+                                    </span>
+                                </th:block>
+                                <th:block th:if="${item.status=='未发货'}">
+                                    <span style="margin-left: 50px;">
+                                        <button type="button" class="btn btn-primary" id="force" style="width: 60px; background: #45bc4b; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:;'">提醒发货</button>
+                                    </span>
+                                </th:block>
+                                <th:block th:if="${item.status=='已评价'}">
+                                    <span style="margin-left: 50px;">
+                                        <button type="button" class="btn btn-primary" id="viewComment" style="width: 60px; background: #45bc4b; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:;'">查看评价</button>
+                                    </span>
+                                </th:block>
+
+                                <!--<div class="sub_content fl">
+                                    <input class="goods_count" th:id="${'goodsCount'+item.id}" type="number"
+                                           th:onblur="'updateItem('+${item.id}+')'"
+                                           th:value="${item.id}" step="1" min="1"
+                                           max="5">
+                                </div>-->
+                                <!--<div class="sub_content fl" style="height: 50px; line-height: 50px"><a href="##" th:onclick="'deleteItem('+${item.id}+')'">×</a>
+                                </div>-->
+                                <div class="clear"></div>
+                            </div>
+                        </th:block>
+                    </div>
+                    <!--<th:block th:each="item : ${myShoppingCartItems}">
+                        <div class="content2 center">
+                            <div class="sub_content fl ">
+                            </div>
+                            <div class="sub_content cover fl"><img th:src="@{${item.goodsCoverImg}}"></div>
+                            <div class="sub_content fl ft20" th:text="${item.goodsName}">商品名称</div>
+                            <div class="sub_content fl" th:text="${item.sellingPrice+'元'}">1299元</div>
+                            <div class="sub_content fl">
+                                <input class="goods_count" th:id="${'goodsCount'+item.cartItemId}" type="number"
+                                       th:onblur="'updateItem('+${item.cartItemId}+')'"
+                                       th:value="${item.goodsCount}" step="1" min="1"
+                                       max="5">
+                            </div>
+                            <div class="sub_content fl" th:text="${item.goodsCount*item.sellingPrice+'元'}">1299元</div>
+                            <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.cartItemId}+')'">×</a>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </th:block>-->
+                </div>
+            </div>
+
+        </div>
+        <!--<div id="cart">
+            <div class="list center">
+                <div class="top2 center">
+                    <div class="sub_top fl">
+                    </div>
+                    <div class="sub_top fl">商品名称</div>
+                    <div class="sub_top fl">单价</div>
+                    <div class="sub_top fl">数量</div>
+                    <div class="sub_top fl">小计</div>
+                    <div class="sub_top fr">操作</div>
+                    <div class="clear"></div>
+                </div>
+                &lt;!&ndash;<th:block th:each="item : ${myShoppingCartItems}">
+                    <div class="content2 center">
+                        <div class="sub_content fl ">
+                        </div>
+                        <div class="sub_content cover fl"><img th:src="@{${item.goodsCoverImg}}"></div>
+                        <div class="sub_content fl ft20" th:text="${item.goodsName}">商品名称</div>
+                        <div class="sub_content fl" th:text="${item.sellingPrice+'元'}">1299元</div>
+                        <div class="sub_content fl">
+                            <input class="goods_count" th:id="${'goodsCount'+item.cartItemId}" type="number"
+                                   th:onblur="'updateItem('+${item.cartItemId}+')'"
+                                   th:value="${item.goodsCount}" step="1" min="1"
+                                   max="5">
+                        </div>
+                        <div class="sub_content fl" th:text="${item.goodsCount*item.sellingPrice+'元'}">1299元</div>
+                        <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.cartItemId}+')'">×</a>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </th:block>&ndash;&gt;
+            </div>
+        </div>-->
+        <!--<div class="intro fr">
+            <div class="grzlbt ml40">我的订单
+            </div>
+            <div class="info_item ml40"><span>昵称</span><span
+                    th:text="${session.User.getNickname()}">newbee-mall</span>
+            </div>
+            <div class="info_item ml40"><span>手机号</span><span
+                    th:text="${session.User.getNickname()}">newbee-mall</span>
+            </div>
+            <div class="info_item ml40"><span>密码</span><span>******</span>
+            </div>
+            <div class="info_item ml40"><span>个性签名</span><span
+                    th:text="${session.User.getNickname()==''?'无':session.User.getNickname()}">newbee-mall</span>
+            </div>
+            <div class="info_item ml40"><span>收货信息</span><span
+                    th:text="${session.User.getNickname()==''?'无':session.User.getNickname()}">newbee-mall</span></span>
+            </div>
+
+        </div>-->
+        <div class="clear"></div>
+    </div>
+</div>
+<!--<div id="cart">
+    <div class="cart_bg">
+        <div class="list center">
+            <div class="top2 center">
+                <div class="sub_top fl">
+                </div>
+                <div class="sub_top fl">商品名称</div>
+                <div class="sub_top fl">单价</div>
+                <div class="sub_top fl">数量</div>
+                <div class="sub_top fl">小计</div>
+                <div class="sub_top fr">操作</div>
+                <div class="clear"></div>
+                <th:block th:each="item : ${myBought}">
+                    <div class="content2 center">
+                        <div class="sub_content fl ">
+                        </div>
+                        <div class="sub_content cover fl"><img th:src="@{'image/sub_banner/r5.jpg'}"></div>
+                        <div class="sub_content fl ft20" th:text="${item.id}">商品名称</div>
+                        <div class="sub_content fl" th:text="${item.dealPrice+'元'}">1299元</div>
+                        <div class="sub_content fl">
+                            <input class="goods_count" th:id="${'goodsCount'+item.id}" type="number"
+                                   th:onblur="'updateItem('+${item.id}+')'"
+                                   th:value="${item.id}" step="1" min="1"
+                                   max="5">
+                        </div>
+                        <div class="sub_content fl" th:text="${item.id*item.id+'元'}">1299元</div>
+                        <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.id}+')'">×</a>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </th:block>
+            </div>
+            &lt;!&ndash;<th:block th:each="item : ${myShoppingCartItems}">
+                <div class="content2 center">
+                    <div class="sub_content fl ">
+                    </div>
+                    <div class="sub_content cover fl"><img th:src="@{${item.goodsCoverImg}}"></div>
+                    <div class="sub_content fl ft20" th:text="${item.goodsName}">商品名称</div>
+                    <div class="sub_content fl" th:text="${item.sellingPrice+'元'}">1299元</div>
+                    <div class="sub_content fl">
+                        <input class="goods_count" th:id="${'goodsCount'+item.cartItemId}" type="number"
+                               th:onblur="'updateItem('+${item.cartItemId}+')'"
+                               th:value="${item.goodsCount}" step="1" min="1"
+                               max="5">
+                    </div>
+                    <div class="sub_content fl" th:text="${item.goodsCount*item.sellingPrice+'元'}">1299元</div>
+                    <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.cartItemId}+')'">×</a>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </th:block>&ndash;&gt;
+        </div>
+    </div>
+
+</div>-->
+<div class="goods_item center">
+    <div class="pages" style="margin-top: 0">
+        <div class="page_wrap">
+            <th:block th:if="${!#lists.isEmpty(myBought)}">
+                <span class="page_span1">
+                    <a th:href="@{${curpage==1}?'##':'/orders?page=' + ${curpage-1}}">
+                                        < 上一页
+                     </a>
+                    <th:block th:if="${curpage-2 >= 1}"><a
+                            th:href="@{'/orders?page=' + ${curpage-2}}"
+                            th:text="${curpage -2}">1</a></th:block>
+                    <th:block th:if="${curpage-1 >= 1}"><a
+                            th:href="@{'/orders?page=' + ${curpage-1}}"
+                            th:text="${curpage -1}">1</a></th:block>
+                    <a href="##" class="active" th:text="${curpage}">1</a>
+                    <th:block th:if="${curpage+1<=totalpage}"><a
+                            th:href="@{'/orders?page=' + ${curpage+1}}"
+                            th:text="${curpage +1}">1</a></th:block>
+                    <th:block th:if="${curpage+2<=totalpage}"><a
+                            th:href="@{'/orders?page=' + ${curpage+2}}"
+                            th:text="${curpage +2}">1</a></th:block>
+                    <a th:href="@{${curpage>=totalpage}?'##':'/orders?page=' + ${curpage+1}}">
+                                        下一页 >
+                     </a>
+
+
+                    <!--<a th:href="@{${pageResult.currPage==1}?'##':'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage-1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}">
+                                       < 上一页
+                    </a>
+                   <th:block th:if="${pageResult.currPage-2 >=1}"><a
+                           th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage-2}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+                           th:text="${pageResult.currPage -2}">1</a></th:block>
+                   <th:block th:if="${pageResult.currPage-1 >=1}"><a
+                           th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage-1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+                           th:text="${pageResult.currPage -1}">1</a></th:block>
+                   <a href="##" class="active" th:text="${pageResult.currPage}">1</a>
+                   <th:block th:if="${pageResult.currPage+1<=pageResult.totalPage}"><a
+                           th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage+1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+                           th:text="${pageResult.currPage +1}">1</a></th:block>
+                   <th:block th:if="${pageResult.currPage+2<=pageResult.totalPage}"><a
+                           th:href="@{'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage+2}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}"
+                           th:text="${pageResult.currPage +2}">1</a></th:block>
+                    <a th:href="@{${pageResult.currPage>=pageResult.totalPage}?'##':'/search?keyword='+${keyword==null?'':keyword}+'&page=' + ${pageResult.currPage+1}+'&goodsCategoryId='+${goodsCategoryId==null?'':goodsCategoryId}+'&orderBy='+${orderBy==null?'':orderBy}}">
+                                       下一页 >
+                    </a>-->
+                </span>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+<div th:replace="mall/footer::footer-fragment"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 3 -->
+<script th:src="@{/mall/js/bootstrap3.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+    $(function () {
+
+    });
+
+</script>
+</body>
+</html>

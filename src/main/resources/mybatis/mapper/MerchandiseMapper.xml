@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="scu.huangtao.aucmall.mapper.MerchandiseMapper">
+  <resultMap id="BaseResultMap" type="scu.huangtao.aucmall.common.domain.Merchandise">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="kind" jdbcType="VARCHAR" property="kind" />
+    <result column="added_time" jdbcType="TIMESTAMP" property="addedTime" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+    <result column="open_auction" jdbcType="BIT" property="openAuction" />
+    <result column="reserve_price" jdbcType="INTEGER" property="reservePrice" />
+    <result column="on_sale" jdbcType="BIT" property="onSale" />
+    <result column="have_highest_price" jdbcType="BIT" property="haveHighestPrice" />
+    <result column="highest_price" jdbcType="INTEGER" property="highestPrice" />
+    <result column="current_bid_price" jdbcType="INTEGER" property="currentBidPrice" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="least_each_price_increase" jdbcType="INTEGER" property="leastEachPriceIncrease" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, img, user_id, order_id, name, mark, description, kind, added_time, start_time, 
+    stop_time, open_auction, reserve_price, on_sale, have_highest_price, highest_price, 
+    current_bid_price, status, least_each_price_increase, is_deleted
+  </sql>
+  <select id="selectByExample" parameterType="scu.huangtao.aucmall.common.domain.MerchandiseExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from merchandise
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from merchandise
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from merchandise
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="scu.huangtao.aucmall.common.domain.MerchandiseExample">
+    delete from merchandise
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+    insert into merchandise (id, img, user_id, 
+      order_id, name, mark, 
+      description, kind, added_time, 
+      start_time, stop_time, open_auction, 
+      reserve_price, on_sale, have_highest_price, 
+      highest_price, current_bid_price, status, 
+      least_each_price_increase, is_deleted)
+    values (#{id,jdbcType=INTEGER}, #{img,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{orderId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{mark,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{kind,jdbcType=VARCHAR}, #{addedTime,jdbcType=TIMESTAMP}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP}, #{openAuction,jdbcType=BIT}, 
+      #{reservePrice,jdbcType=INTEGER}, #{onSale,jdbcType=BIT}, #{haveHighestPrice,jdbcType=BIT}, 
+      #{highestPrice,jdbcType=INTEGER}, #{currentBidPrice,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
+      #{leastEachPriceIncrease,jdbcType=INTEGER}, #{isDeleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+    insert into merchandise
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="img != null">
+        img,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="mark != null">
+        mark,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="kind != null">
+        kind,
+      </if>
+      <if test="addedTime != null">
+        added_time,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="stopTime != null">
+        stop_time,
+      </if>
+      <if test="openAuction != null">
+        open_auction,
+      </if>
+      <if test="reservePrice != null">
+        reserve_price,
+      </if>
+      <if test="onSale != null">
+        on_sale,
+      </if>
+      <if test="haveHighestPrice != null">
+        have_highest_price,
+      </if>
+      <if test="highestPrice != null">
+        highest_price,
+      </if>
+      <if test="currentBidPrice != null">
+        current_bid_price,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="leastEachPriceIncrease != null">
+        least_each_price_increase,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="img != null">
+        #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="kind != null">
+        #{kind,jdbcType=VARCHAR},
+      </if>
+      <if test="addedTime != null">
+        #{addedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null">
+        #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openAuction != null">
+        #{openAuction,jdbcType=BIT},
+      </if>
+      <if test="reservePrice != null">
+        #{reservePrice,jdbcType=INTEGER},
+      </if>
+      <if test="onSale != null">
+        #{onSale,jdbcType=BIT},
+      </if>
+      <if test="haveHighestPrice != null">
+        #{haveHighestPrice,jdbcType=BIT},
+      </if>
+      <if test="highestPrice != null">
+        #{highestPrice,jdbcType=INTEGER},
+      </if>
+      <if test="currentBidPrice != null">
+        #{currentBidPrice,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="leastEachPriceIncrease != null">
+        #{leastEachPriceIncrease,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="scu.huangtao.aucmall.common.domain.MerchandiseExample" resultType="java.lang.Long">
+    select count(*) from merchandise
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update merchandise
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.img != null">
+        img = #{record.img,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mark != null">
+        mark = #{record.mark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null">
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.kind != null">
+        kind = #{record.kind,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addedTime != null">
+        added_time = #{record.addedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.startTime != null">
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.stopTime != null">
+        stop_time = #{record.stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.openAuction != null">
+        open_auction = #{record.openAuction,jdbcType=BIT},
+      </if>
+      <if test="record.reservePrice != null">
+        reserve_price = #{record.reservePrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.onSale != null">
+        on_sale = #{record.onSale,jdbcType=BIT},
+      </if>
+      <if test="record.haveHighestPrice != null">
+        have_highest_price = #{record.haveHighestPrice,jdbcType=BIT},
+      </if>
+      <if test="record.highestPrice != null">
+        highest_price = #{record.highestPrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.currentBidPrice != null">
+        current_bid_price = #{record.currentBidPrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leastEachPriceIncrease != null">
+        least_each_price_increase = #{record.leastEachPriceIncrease,jdbcType=INTEGER},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update merchandise
+    set id = #{record.id,jdbcType=INTEGER},
+      img = #{record.img,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      order_id = #{record.orderId,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      mark = #{record.mark,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      kind = #{record.kind,jdbcType=VARCHAR},
+      added_time = #{record.addedTime,jdbcType=TIMESTAMP},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      stop_time = #{record.stopTime,jdbcType=TIMESTAMP},
+      open_auction = #{record.openAuction,jdbcType=BIT},
+      reserve_price = #{record.reservePrice,jdbcType=INTEGER},
+      on_sale = #{record.onSale,jdbcType=BIT},
+      have_highest_price = #{record.haveHighestPrice,jdbcType=BIT},
+      highest_price = #{record.highestPrice,jdbcType=INTEGER},
+      current_bid_price = #{record.currentBidPrice,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=VARCHAR},
+      least_each_price_increase = #{record.leastEachPriceIncrease,jdbcType=INTEGER},
+      is_deleted = #{record.isDeleted,jdbcType=BIT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+    update merchandise
+    <set>
+      <if test="img != null">
+        img = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null">
+        mark = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="kind != null">
+        kind = #{kind,jdbcType=VARCHAR},
+      </if>
+      <if test="addedTime != null">
+        added_time = #{addedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null">
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openAuction != null">
+        open_auction = #{openAuction,jdbcType=BIT},
+      </if>
+      <if test="reservePrice != null">
+        reserve_price = #{reservePrice,jdbcType=INTEGER},
+      </if>
+      <if test="onSale != null">
+        on_sale = #{onSale,jdbcType=BIT},
+      </if>
+      <if test="haveHighestPrice != null">
+        have_highest_price = #{haveHighestPrice,jdbcType=BIT},
+      </if>
+      <if test="highestPrice != null">
+        highest_price = #{highestPrice,jdbcType=INTEGER},
+      </if>
+      <if test="currentBidPrice != null">
+        current_bid_price = #{currentBidPrice,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="leastEachPriceIncrease != null">
+        least_each_price_increase = #{leastEachPriceIncrease,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+    update merchandise
+    set img = #{img,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      mark = #{mark,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      kind = #{kind,jdbcType=VARCHAR},
+      added_time = #{addedTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      stop_time = #{stopTime,jdbcType=TIMESTAMP},
+      open_auction = #{openAuction,jdbcType=BIT},
+      reserve_price = #{reservePrice,jdbcType=INTEGER},
+      on_sale = #{onSale,jdbcType=BIT},
+      have_highest_price = #{haveHighestPrice,jdbcType=BIT},
+      highest_price = #{highestPrice,jdbcType=INTEGER},
+      current_bid_price = #{currentBidPrice,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      least_each_price_increase = #{leastEachPriceIncrease,jdbcType=INTEGER},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getAllMerchByUserId" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where user_id=#{userid,jdbcType=INTEGER} and is_deleted=false
+  </select>
+  <select id="getAllMerchByUserId1" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where user_id=#{userid,jdbcType=INTEGER} and is_deleted=false ORDER BY added_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  <select id="getOneMerchById" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where id=#{id,jdbcType=INTEGER} and is_deleted=false
+  </select>
+  <select id="getAllMerch1" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and is_deleted=false ORDER BY added_time DESC
+  </select>
+  <select id="getAllMerch" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and is_deleted=false  ORDER BY added_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  <select id="getAllMerchSearch" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where (mark LIKE #{key,jdbcType=VARCHAR} or name LIKE #{key,jdbcType=VARCHAR} or kind LIKE #{key,jdbcType=VARCHAR}) and status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and is_deleted=false  ORDER BY added_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  <select id="getAllMerch1Search" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where (mark LIKE #{key,jdbcType=VARCHAR} or name LIKE #{key,jdbcType=VARCHAR} or kind LIKE #{key,jdbcType=VARCHAR}) and status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and is_deleted=false ORDER BY added_time DESC
+  </select>
+</mapper>

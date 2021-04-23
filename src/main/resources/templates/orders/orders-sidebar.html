@@ -1,0 +1,14 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="lfnav fl" th:fragment="sidebar-fragment">
+    <div class="nav_title">我的订单</div>
+    <div class="title_list">
+        <ul>
+            <li><a th:href="@{'/orders'}" th:class="${path=='personal'?'active':''}">我买到的</a></li>
+            <li><a th:href="@{'/mysells'}" th:class="${path=='my_goods'?'active':''}">我卖出的</a></li>
+            <li><a th:href="@{'/logout'}">退出登录</a></li>
+        </ul>
+    </div>
+</div>
+</html>

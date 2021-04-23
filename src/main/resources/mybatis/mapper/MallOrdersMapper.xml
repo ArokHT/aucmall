@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="scu.huangtao.aucmall.mapper.MallOrdersMapper">
+  <resultMap id="BaseResultMap" type="scu.huangtao.aucmall.common.domain.MallOrders">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="merch_id" jdbcType="INTEGER" property="merchId" />
+    <result column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <result column="buyer_id" jdbcType="INTEGER" property="buyerId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="deal_time" jdbcType="TIMESTAMP" property="dealTime" />
+    <result column="deal_price" jdbcType="INTEGER" property="dealPrice" />
+    <result column="is_canceled" jdbcType="BIT" property="isCanceled" />
+    <result column="is_delivered" jdbcType="BIT" property="isDelivered" />
+    <result column="is_received" jdbcType="BIT" property="isReceived" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+  </resultMap>
+  <resultMap id="ViewResultMap" type="scu.huangtao.aucmall.common.domain.OrdersView">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="merch_id" jdbcType="INTEGER" property="merchId" />
+    <result column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <result column="buyer_id" jdbcType="INTEGER" property="buyerId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="deal_time" jdbcType="TIMESTAMP" property="dealTime" />
+    <result column="deal_price" jdbcType="INTEGER" property="dealPrice" />
+    <result column="name" jdbcType="INTEGER" property="name" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, merch_id, comment_id, owner_id, buyer_id, address, status, deal_time, deal_price, 
+    is_canceled, is_delivered, is_received, is_deleted
+  </sql>
+  <select id="selectByExample" parameterType="scu.huangtao.aucmall.common.domain.MallOrdersExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mall_orders
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mall_orders
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from mall_orders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="scu.huangtao.aucmall.common.domain.MallOrdersExample">
+    delete from mall_orders
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="scu.huangtao.aucmall.common.domain.MallOrders">
+    insert into mall_orders (id, merch_id, comment_id, 
+      owner_id, buyer_id, address, 
+      status, deal_time, deal_price, 
+      is_canceled, is_delivered, is_received, 
+      is_deleted)
+    values (#{id,jdbcType=INTEGER}, #{merchId,jdbcType=INTEGER}, #{commentId,jdbcType=INTEGER}, 
+      #{ownerId,jdbcType=INTEGER}, #{buyerId,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{dealTime,jdbcType=TIMESTAMP}, #{dealPrice,jdbcType=INTEGER}, 
+      #{isCanceled,jdbcType=BIT}, #{isDelivered,jdbcType=BIT}, #{isReceived,jdbcType=BIT}, 
+      #{isDeleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="scu.huangtao.aucmall.common.domain.MallOrders">
+    insert into mall_orders
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="merchId != null">
+        merch_id,
+      </if>
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="buyerId != null">
+        buyer_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="dealTime != null">
+        deal_time,
+      </if>
+      <if test="dealPrice != null">
+        deal_price,
+      </if>
+      <if test="isCanceled != null">
+        is_canceled,
+      </if>
+      <if test="isDelivered != null">
+        is_delivered,
+      </if>
+      <if test="isReceived != null">
+        is_received,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="merchId != null">
+        #{merchId,jdbcType=INTEGER},
+      </if>
+      <if test="commentId != null">
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="buyerId != null">
+        #{buyerId,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTime != null">
+        #{dealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealPrice != null">
+        #{dealPrice,jdbcType=INTEGER},
+      </if>
+      <if test="isCanceled != null">
+        #{isCanceled,jdbcType=BIT},
+      </if>
+      <if test="isDelivered != null">
+        #{isDelivered,jdbcType=BIT},
+      </if>
+      <if test="isReceived != null">
+        #{isReceived,jdbcType=BIT},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="scu.huangtao.aucmall.common.domain.MallOrdersExample" resultType="java.lang.Long">
+    select count(*) from mall_orders
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update mall_orders
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.merchId != null">
+        merch_id = #{record.merchId,jdbcType=INTEGER},
+      </if>
+      <if test="record.commentId != null">
+        comment_id = #{record.commentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ownerId != null">
+        owner_id = #{record.ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.buyerId != null">
+        buyer_id = #{record.buyerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.address != null">
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dealTime != null">
+        deal_time = #{record.dealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dealPrice != null">
+        deal_price = #{record.dealPrice,jdbcType=INTEGER},
+      </if>
+      <if test="record.isCanceled != null">
+        is_canceled = #{record.isCanceled,jdbcType=BIT},
+      </if>
+      <if test="record.isDelivered != null">
+        is_delivered = #{record.isDelivered,jdbcType=BIT},
+      </if>
+      <if test="record.isReceived != null">
+        is_received = #{record.isReceived,jdbcType=BIT},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update mall_orders
+    set id = #{record.id,jdbcType=INTEGER},
+      merch_id = #{record.merchId,jdbcType=INTEGER},
+      comment_id = #{record.commentId,jdbcType=INTEGER},
+      owner_id = #{record.ownerId,jdbcType=INTEGER},
+      buyer_id = #{record.buyerId,jdbcType=INTEGER},
+      address = #{record.address,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=VARCHAR},
+      deal_time = #{record.dealTime,jdbcType=TIMESTAMP},
+      deal_price = #{record.dealPrice,jdbcType=INTEGER},
+      is_canceled = #{record.isCanceled,jdbcType=BIT},
+      is_delivered = #{record.isDelivered,jdbcType=BIT},
+      is_received = #{record.isReceived,jdbcType=BIT},
+      is_deleted = #{record.isDeleted,jdbcType=BIT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="scu.huangtao.aucmall.common.domain.MallOrders">
+    update mall_orders
+    <set>
+      <if test="merchId != null">
+        merch_id = #{merchId,jdbcType=INTEGER},
+      </if>
+      <if test="commentId != null">
+        comment_id = #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="buyerId != null">
+        buyer_id = #{buyerId,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTime != null">
+        deal_time = #{dealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealPrice != null">
+        deal_price = #{dealPrice,jdbcType=INTEGER},
+      </if>
+      <if test="isCanceled != null">
+        is_canceled = #{isCanceled,jdbcType=BIT},
+      </if>
+      <if test="isDelivered != null">
+        is_delivered = #{isDelivered,jdbcType=BIT},
+      </if>
+      <if test="isReceived != null">
+        is_received = #{isReceived,jdbcType=BIT},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="scu.huangtao.aucmall.common.domain.MallOrders">
+    update mall_orders
+    set merch_id = #{merchId,jdbcType=INTEGER},
+      comment_id = #{commentId,jdbcType=INTEGER},
+      owner_id = #{ownerId,jdbcType=INTEGER},
+      buyer_id = #{buyerId,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      deal_time = #{dealTime,jdbcType=TIMESTAMP},
+      deal_price = #{dealPrice,jdbcType=INTEGER},
+      is_canceled = #{isCanceled,jdbcType=BIT},
+      is_delivered = #{isDelivered,jdbcType=BIT},
+      is_received = #{isReceived,jdbcType=BIT},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByUserId" parameterType="scu.huangtao.aucmall.common.domain.MallOrders" resultMap="BaseResultMap">
+    select *
+    from mall_orders
+    where buyer_id=#{userid,jdbcType=INTEGER} and is_deleted=false
+    ORDER BY deal_price DESC
+  </select>
+
+  <select id="selectView" parameterType="scu.huangtao.aucmall.common.domain.MallOrders" resultMap="ViewResultMap">
+    select *
+    from mall_orders o left join merchandise m on o.merch_id = m.id
+    where o.buyer_id=#{userid,jdbcType=INTEGER} and o.is_deleted=false
+    ORDER BY o.deal_price DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  <select id="selectSellView" parameterType="scu.huangtao.aucmall.common.domain.MallOrders" resultMap="ViewResultMap">
+    select *
+    from mall_orders o left join merchandise m on o.merch_id = m.id
+    where o.owner_id=#{userid,jdbcType=INTEGER} and o.is_deleted=false
+    ORDER BY o.deal_price DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  <select id="selectView1" parameterType="scu.huangtao.aucmall.common.domain.MallOrders" resultMap="ViewResultMap">
+    select *
+    from mall_orders o left join merchandise m on o.merch_id = m.id
+    where o.owner_id=#{userid,jdbcType=INTEGER} and o.is_deleted=false
+    ORDER BY o.deal_price DESC
+  </select>
+
+  <select id="selectOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from mall_orders where buyer_id=#{userid,jdbcType=INTEGER} and is_deleted=false
+  </select>
+  <select id="selectSellOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from mall_orders where owner_id=#{userid,jdbcType=INTEGER} and is_deleted=false
+  </select>
+</mapper>
