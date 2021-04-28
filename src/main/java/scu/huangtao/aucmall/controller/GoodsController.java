@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import scu.huangtao.aucmall.common.domain.Account;
 import scu.huangtao.aucmall.common.domain.Merchandise;
+import scu.huangtao.aucmall.service.AccountService;
 import scu.huangtao.aucmall.service.GoodsService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,8 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private AccountService accountService;
     
     @RequestMapping(value="/addgoods.do",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -144,12 +148,16 @@ public class GoodsController {
         return "goods/my_goods";
     }
     @GetMapping("/goods/detail/{goodsId}")
-    public String detailPage(@PathVariable("goodsId") String goodsId, HttpServletRequest request, Model model) {
+    public String detailPage(@PathVariable("goodsId") String goodsId, HttpSession session, HttpServletRequest request, Model model) {
         /*if (goodsId < 1) {
             return "error/error_5xx";
         }*/
-        System.out.println(goodsId);
+        int userid = (int) session.getAttribute("UserId");
+        System.out.println("getting good=> " + goodsId);
         Merchandise goodsdetail = goodsService.getOneMerchById(Integer.parseInt(goodsId)).get(0);
+        Account account = accountService.getOneAccountById(userid);
+        Account accountOfOwner = accountService.getOneAccountById(goodsdetail.getUserId());
+        System.out.println("Account id => " + account.getId() + " etherAddress => " + account.getEtheraddress());
         System.out.println(goodsdetail.getId());
         /*if (goods == null) {
             NewBeeMallException.fail(ServiceResultEnum.GOODS_NOT_EXIST.getResult());
@@ -161,6 +169,8 @@ public class GoodsController {
         BeanUtil.copyProperties(goods, goodsDetailVO);
         goodsDetailVO.setGoodsCarouselList(goods.getGoodsCarousel().split(","));*/
         model.addAttribute("goodsDetail", goodsdetail);
+        model.addAttribute("Account", account);
+        model.addAttribute("AccountOfOwner", accountOfOwner);
         return "goods/detail";
     }
     @GetMapping("/mall/index")

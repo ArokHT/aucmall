@@ -6,8 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import scu.huangtao.aucmall.common.domain.Account;
 import scu.huangtao.aucmall.common.domain.ShippingAddress;
 import scu.huangtao.aucmall.common.domain.User;
+import scu.huangtao.aucmall.service.AccountService;
 import scu.huangtao.aucmall.service.ShippingAddressService;
 import scu.huangtao.aucmall.service.UserService;
 
@@ -23,6 +25,8 @@ public class UserController {
     UserService userService;
     @Autowired
     ShippingAddressService shippingAddressService;
+    @Autowired
+    AccountService accountService;
     @RequestMapping(value ="mall/login")
     @ResponseBody
     public String login(@RequestParam("loginName") String loginName,
@@ -100,10 +104,13 @@ public class UserController {
         return "mall/login";
     }
     @RequestMapping("/personal")
-    public String personal(HttpServletRequest request, HttpSession session) {
+    public String personal(HttpServletRequest request, HttpSession session, Model model) {
         if(request.getSession().getAttribute("UserId") == null){
             return "mall/login";
         }
+        int userid = (int) session.getAttribute("UserId");
+        Account account = accountService.getOneAccountById(userid);
+        session.setAttribute("Account", account);
         return "mall/personal";
     }
 

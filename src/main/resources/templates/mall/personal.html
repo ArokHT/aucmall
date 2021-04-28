@@ -29,8 +29,8 @@
             </div>
             <div class="info_item ml40"><span>密码</span><span>******</span>
             </div>
-            <div class="info_item ml40"><span>个性签名</span><span
-                    th:text="${session.User.getNickname()==''?'无':session.User.getNickname()}">newbee-mall</span>
+            <div class="info_item ml40"><span>以太账号</span><span
+                    th:text="${session.User.getNickname()==''?'无':session.Account.getEtheraddress()}">newbee-mall</span>
             </div>
             <div class="info_item ml40"><span>收货信息</span><span
                     th:text="${session.User.getNickname()==''?'无':session.User.getNickname()}">newbee-mall</span></span>

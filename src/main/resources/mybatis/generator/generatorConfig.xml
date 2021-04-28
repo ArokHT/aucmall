@@ -41,6 +41,7 @@
         <!--<table tableName="Comment" domainObjectName="Comment"/>-->
         <!--<table tableName="browsing_history" domainObjectName="History"/>-->
         <!--<table tableName="user" domainObjectName="User"/>-->
+        <!--<table tableName="account" domainObjectName="Account"/>-->
         <!--<table tableName="mall_orders" domainObjectName="MallOrders"/>-->
         <!--<table tableName="merchandise" domainObjectName="Merchandise"/>-->
         <!--<table tableName="user" domainObjectName="user"/>-->
