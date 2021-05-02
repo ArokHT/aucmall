@@ -34,4 +34,5 @@ public interface ShippingAddressMapper {
     int setDefault(@Param("afterId") int afterId);
     int setUnDefault(@Param("beforeId") int beforeId);
     int deleteAddress(@Param("id") int id);
+    ShippingAddress getDefaultById(@Param("userid")int userid);
 }

@@ -213,13 +213,16 @@
     select * from shipping_address where user_id=#{id,jdbcType=INTEGER} and is_deleted=false
   </select>
 
-  <update id="setDefault" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+  <update id="setDefault" parameterType="scu.huangtao.aucmall.common.domain.ShippingAddress">
     update shipping_address set is_default=true where id=#{afterId,jdbcType=INTEGER}
   </update>
-  <update id="setUnDefault" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+  <update id="setUnDefault" parameterType="scu.huangtao.aucmall.common.domain.ShippingAddress">
     update shipping_address set is_default=false where id=#{beforeId,jdbcType=INTEGER}
   </update>
-  <update id="deleteAddress" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
+  <update id="deleteAddress" parameterType="scu.huangtao.aucmall.common.domain.ShippingAddress">
     update shipping_address set is_deleted=true where id=#{id,jdbcType=INTEGER}
   </update>
+  <select id="getDefaultById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from shipping_address  where user_id=#{userid,jdbcType=INTEGER} and is_default=true
+  </select>
 </mapper>

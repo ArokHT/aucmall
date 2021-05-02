@@ -12,4 +12,5 @@ public interface OrdersServiceInt {
     public List<OrdersView> getSellOrdersView(int page,int limit, int uerId);
     public int getOrdersNum(int uerId);
     public int getSellOrdersNum(int uerId);
+    public int addMallOrder(int merchid,int owerid,int buyerid,int price,String address);
 }

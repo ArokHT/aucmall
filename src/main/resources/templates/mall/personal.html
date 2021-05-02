@@ -30,12 +30,23 @@
             <div class="info_item ml40"><span>密码</span><span>******</span>
             </div>
             <div class="info_item ml40"><span>以太账号</span><span
-                    th:text="${session.User.getNickname()==''?'无':session.Account.getEtheraddress()}">newbee-mall</span>
+                    th:text="${session.Account.getEtheraddress()==''?'无':session.Account.getEtheraddress()}">newbee-mall</span>
+                <th:block th:if="${session.Account.getEtheraddress()==''}">
+                    <span>
+                        <button type="button" class="btn btn-primary" id="addEtherAddress" th:onclick="'javascript:openAddrUpdateModal();'">绑定以太坊地址</button>
+                    </span>
+                </th:block>
+                <th:block th:unless="${session.Account.getEtheraddress()==''}">
+                    <span style="width: 30px;">ETH:</span>
+                    <span id="balanceaa">
+                    </span>
+                </th:block>
             </div>
             <div class="info_item ml40"><span>收货信息</span><span
                     th:text="${session.User.getNickname()==''?'无':session.User.getNickname()}">newbee-mall</span></span>
             </div>
-
+            <!--传参数参考这个-->
+            <!--<button type="button" class="btn btn-primary" id="default" style="width: 80px" th:onclick="'javascript:setDefault(\''+${address.id}+'\');'">设为默认</button>-->
         </div>
         <div class="clear"></div>
     </div>
@@ -82,6 +93,36 @@
         </div>
         <!-- /.modal -->
     </div>
+    <div class="content">
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="addressInfoModal" tabindex="-1" role="dialog"
+             aria-labelledby="personalInfoModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h6 class="modal-title" id="addressInfoModalLabel">添加以太坊地址</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addressInfoForm">
+                            <div class="form-group">
+                                <label for="address" class="control-label">以太坊地址:</label>
+                                <input type="text" class="form-control" id="etherAddress" name="etherAddress"
+                                       placeholder="请输入以太坊地址"
+                                       required="true">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="saveButton2">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+    </div>
 </div>
 
 <div th:replace="mall/footer::footer-fragment"></div>
@@ -92,14 +133,263 @@
 <script th:src="@{/mall/js/bootstrap3.js}"></script>
 <script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
 <script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
-<script type="text/javascript">
+<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    var httpProvider;
+    var web3;
+    var auctionContract;
+
+    /*<![CDATA[*/
+
+    var userAddress = /*[[${session.Account.getEtheraddress()}]]*/ '0x06c8F0ddeb30C509C2F4b6A7d64f65831B4036d6';
+
+    /*]]>*/
+
     $(function () {
+        httpProvider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
+        web3 = new Web3(httpProvider);
+        auctionContract = new web3.eth.Contract([
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "GetTheBalance",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "SendEvent",
+                "type": "event"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "sellerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address payable",
+                        "name": "sellerAddress",
+                        "type": "address"
+                    }
+                ],
+                "name": "start",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "bidderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "bidPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getBid",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "bidderid",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "bidprice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "isChanged",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getAucInfo",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "end",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "addr",
+                        "type": "address"
+                    }
+                ],
+                "name": "getBalance",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ], '0x2f8303e8E9e8e4CE5B8a7f22E25835E99736475f');//这个地方在区块链重新部署后需要修改[]与''
+        auctionContract.setProvider(httpProvider);
+        console.log("kaishilema ?");
+        console.log(userAddress);
+        auctionContract.methods.getBalance(userAddress).call().then(function (result){
+            console.log(result);
+            var blc = Number(result[1])/10**18;
+            console.log(blc);
+            $('#balanceaa').html(blc);
+        });
 
     });
+
+
     function openUpdateModal() {
         $('#personalInfoModal').modal('show');
     }
-
     //绑定modal上的保存按钮
     $('#saveButton').click(function () {
         var address = $("#address").val();
@@ -142,6 +432,56 @@
                 } else {
                     $('#personalInfoModal').modal('hide');
                     alert(result.message);
+                }
+                ;
+            },
+            error: function () {
+                alert('操作失败');
+            }
+        });
+    });
+
+    function openAddrUpdateModal() {
+        $('#addressInfoModal').modal('show');
+    }
+    //绑定modal上的保存按钮
+    $('#saveButton2').click(function () {
+        var etherAddress = $("#etherAddress").val();
+        if (etherAddress.trim().length > 42 || etherAddress.trim().length < 42) {
+            swal("请输入正确的以太坊地址", {
+                icon: "error",
+            });
+            return;
+        }
+        var data=$("#etherAddress").serialize();
+        console.log(data);
+        $.ajax({
+            type: 'POST',//方法类型
+            url: "/addEtherAddr",
+            /*contentType: 'application/json',*/
+            data: data,
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (result) {
+                if (result.type == "2") {
+                    $('#addressInfoModal').modal('hide');
+                    swal({
+                        title: result.message,
+                        //text: 'You clicked the button!',
+                        type: 'success',
+                        timer: 1000,
+                        showConfirmButton: false
+                    })
+                    window.location.reload();
+                } else {
+                    $('#addressInfoModal').modal('hide');
+                    swal({
+                        title: result.message,
+                        //text: 'You clicked the button!',
+                        type: 'error',
+                        timer: 1000,
+                        showConfirmButton: false
+                    })
                 }
                 ;
             },

@@ -1,15 +1,19 @@
 package scu.huangtao.aucmall.controller;
 
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import scu.huangtao.aucmall.common.domain.MallOrders;
 import scu.huangtao.aucmall.common.domain.OrdersView;
+import scu.huangtao.aucmall.common.domain.ShippingAddress;
+import scu.huangtao.aucmall.service.GoodsService;
 import scu.huangtao.aucmall.service.OrdersService;
+import scu.huangtao.aucmall.service.ShippingAddressService;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +21,10 @@ import java.util.Map;
 public class OrdersController {
     @Autowired
     OrdersService ordersService;
+    @Autowired
+    ShippingAddressService shippingAddressService;
+    @Autowired
+    GoodsService goodsService;
     @GetMapping(value = "/orders")
     public String orders(@RequestParam Map<String, Object> params, HttpSession session, Model model){
         int userid = (int) session.getAttribute("UserId");
@@ -36,7 +44,7 @@ public class OrdersController {
         }
         System.out.println("一共有" + total + "个我买到的订单");
         System.out.println("找到了" + myBought.size() + "个我买到的订单");
-        System.out.println("name-->" + myBought.get(0).getName());
+        //System.out.println("name-->" + myBought.get(0).getName());
         model.addAttribute("curpage", curpage);
         model.addAttribute("totalpage", talpage);
         model.addAttribute("myBought", myBought);
@@ -59,10 +67,35 @@ public class OrdersController {
             curpage = page;
         }
         System.out.println("找到了" + mysells.size() + "个我卖出的订单");
-        System.out.println("name-->" + mysells.get(0).getName());
+        //System.out.println("name-->" + mysells.get(0).getName());
         model.addAttribute("curpage", curpage);
         model.addAttribute("totalpage", talpage);
         model.addAttribute("mySells", mysells);
         return "orders/mysells";
+    }
+    @PostMapping(value = "/addMallOrder")
+    @ResponseBody
+    public String addMallOrder(@RequestBody Map<String, Object> params){
+        int merchId = Integer.parseInt(params.get("merchId").toString());
+        int userId = Integer.parseInt(params.get("ownerId").toString());
+        int buyerId = Integer.parseInt(params.get("buyerId").toString());
+        int dealPrice = Integer.parseInt(params.get("dealPrice").toString());
+        ShippingAddress address=shippingAddressService.getDefaultById(buyerId);
+        int m=ordersService.addMallOrder(merchId,userId,buyerId,dealPrice,address.getAddress());
+        goodsService.setMerchOffshelf(merchId);//下架拍品
+        JSONObject jsonObject = new JSONObject();
+        String msg = "";
+        String type = "";
+        if(m==1){
+            type = "0";
+            msg = "拍卖成功";
+        }else {
+            type = "1";
+            msg = "拍卖失败";
+        }
+        jsonObject.put("message", msg);
+        jsonObject.put("type", type);
+        System.out.println(jsonObject.toString());
+        return jsonObject.toString();
     }
 }

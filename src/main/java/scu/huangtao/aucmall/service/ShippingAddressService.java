@@ -42,4 +42,9 @@ public class ShippingAddressService implements ShippingAddressServiceInt{
         return shippingAddressMapper.deleteAddress(id);
     }
 
+    @Override
+    public ShippingAddress getDefaultById(int userid){
+        return shippingAddressMapper.getDefaultById(userid);
+    }
+
 }

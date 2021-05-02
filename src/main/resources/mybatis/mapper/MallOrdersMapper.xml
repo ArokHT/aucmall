@@ -380,4 +380,14 @@
   <select id="selectSellOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     select count(*) from mall_orders where owner_id=#{userid,jdbcType=INTEGER} and is_deleted=false
   </select>
+  <insert id="addMallOrder" parameterType="scu.huangtao.aucmall.common.domain.MallOrders">
+    insert into mall_orders (merch_id,
+                             owner_id, buyer_id, address,
+                             status, deal_time, deal_price,
+                             is_canceled, is_delivered, is_received,
+                             is_deleted)
+    values (#{merchid,jdbcType=INTEGER},
+            #{owerid,jdbcType=INTEGER}, #{buyerid,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR},
+            '未发货', now(), #{price,jdbcType=INTEGER}, false, false, false,false)
+  </insert>
 </mapper>

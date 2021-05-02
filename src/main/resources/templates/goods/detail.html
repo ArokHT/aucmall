@@ -37,8 +37,8 @@
 
             <div class="order">
                 <th:block th:if="${goodsDetail.userId} == ${session.User.getId()}">
-                    <input class="car" type="button" th:onclick="'giveBid()'" value="修改信息"/>
-                    <input class="car" type="button" th:onclick="" value="下架"/>
+                    <input class="car" type="button" th:onclick="" value="修改信息"/>
+                    <input class="car" type="button" th:onclick="'endAuction()'" value="结束拍卖"/>
                 </th:block>
                 <th:block th:unless="${goodsDetail.userId} == ${session.User.getId()}">
                     <input class="car" type="button" th:onclick="'giveBid()'" value="立即出价"/>
@@ -100,7 +100,7 @@
 
     var httpProvider;
     var web3;
-    var auctionContract
+    var auctionContract;
     console.log(merchId);
     console.log(userId);
     console.log(userAddress);
@@ -110,26 +110,54 @@
         web3 = new Web3(httpProvider);
         auctionContract = new web3.eth.Contract([
             {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "GetTheBalance",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "SendEvent",
+                "type": "event"
+            },
+            {
                 "constant": false,
                 "inputs": [
                     {
                         "internalType": "uint256",
-                        "name": "merchid",
+                        "name": "merchId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "sellerid",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "highestbidderid",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "highestprice",
+                        "name": "sellerId",
                         "type": "uint256"
                     },
                     {
@@ -155,17 +183,17 @@
                 "inputs": [
                     {
                         "internalType": "uint256",
-                        "name": "merchid",
+                        "name": "merchId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "bidderid",
+                        "name": "bidderId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "bidprice",
+                        "name": "bidPrice",
                         "type": "uint256"
                     }
                 ],
@@ -177,8 +205,8 @@
                         "type": "bool"
                     }
                 ],
-                "payable": false,
-                "stateMutability": "nonpayable",
+                "payable": true,
+                "stateMutability": "payable",
                 "type": "function"
             },
             {
@@ -186,7 +214,7 @@
                 "inputs": [
                     {
                         "internalType": "uint256",
-                        "name": "merchid",
+                        "name": "merchId",
                         "type": "uint256"
                     },
                     {
@@ -217,7 +245,7 @@
                 "inputs": [
                     {
                         "internalType": "uint256",
-                        "name": "merchid",
+                        "name": "merchId",
                         "type": "uint256"
                     }
                 ],
@@ -247,6 +275,11 @@
                         "internalType": "address",
                         "name": "",
                         "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
                     }
                 ],
                 "payable": false,
@@ -258,7 +291,7 @@
                 "inputs": [
                     {
                         "internalType": "uint256",
-                        "name": "merchid",
+                        "name": "merchId",
                         "type": "uint256"
                     }
                 ],
@@ -270,12 +303,38 @@
                         "type": "bool"
                     }
                 ],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "addr",
+                        "type": "address"
+                    }
+                ],
+                "name": "getBalance",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
                 "payable": false,
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
-        ], '0xCA2993c793A72a5c540EAC813135E371Dbc4c2B1');
+        ], '0xd411F13917518a63f613Ac840550FD332bbc2bD3');//这个地方在区块链重新部署后需要修改[]与''
         auctionContract.setProvider(httpProvider);
+        auctionContract.methods.getAucInfo(merchId).call().then(function (result){
+            if(result[3] == false){
+                auctionContract.methods.start(merchId,sellerId,sellerAddress).send({from: sellerAddress, gas: 2000000})
+            }
+        });
 
 
        // auctionContract.methods.newMerchOpenAuctionNo(userId, merchId, reservePrice, leastEachPriceIncrease).send({from: '0xF94621DF0581E662C2F4ae6D045255FA5235A603'});
@@ -298,7 +357,7 @@
         auctionContract.methods.getAucInfo(merchId).call().then(function (result){
             console.log(result);
             if(result[3] == false){
-                auctionContract.methods.start(merchId,sellerId,0,0,sellerAddress).send({from: sellerAddress, gas: 2000000})
+                auctionContract.methods.start(merchId,sellerId,sellerAddress).send({from: sellerAddress, gas: 2000000})
             }else{
                 console.log("nothing");
                 var val = 0;//接收输入的字符
@@ -324,7 +383,7 @@
                         console.log(bidPrice);
                         if(bidPrice > reservePrice + leastEachPriceIncrease && bidPrice > highestPrice + leastEachPriceIncrease){
                             console.log("bid with " + bidPrice);
-                            auctionContract.methods.getBid(merchId, userId, bidPrice).send({from: userAddress, gas: 2000000});
+                            auctionContract.methods.getBid(merchId, userId, bidPrice).send({from: userAddress, value: web3.utils.toWei(bidPrice.toString(), "ether"), gas: 2000000});
                             swal({
                                 type: 'success',
                                 html: '出价成功！ ',
@@ -355,6 +414,53 @@
 
 
 
+    }
+    //结束拍卖
+    function endAuction(){
+        auctionContract.methods.end(merchId).send({from: sellerAddress, gas:2000000});
+        console.log("ending----");
+        auctionContract.methods.getAucInfo(merchId).call().then(function (result){
+            if(Number(result[2].toString()) > 0){
+                console.log("adding----");
+                addMallOrder();
+            }
+        })
+    }
+    //添加订单
+    function addMallOrder(){
+        auctionContract.methods.getAucInfo(merchId).call().then(function (result){
+            var data = {
+                merchId:Number(merchId),
+                ownerId:Number(sellerId),
+                buyerId:Number(result[1]),
+                dealPrice:Number(result[2])
+            };
+            console.log(merchId);
+            if(result[3] == false){
+                $.ajax({
+                    url : "/addMallOrder",
+                    type : "POST",
+                    data : JSON.stringify(data),
+                    dataType: 'json',
+                    contentType:'application/json;charset=UTF-8', //contentType很重要
+                    success : function(result) {
+                        if(result.type = "0"){
+                            swal({
+                                type: 'success',
+                                html: '订单已生成！',
+                                timer: 2000
+                            });
+                        }else{
+                            swal({
+                                type: 'error',
+                                html: '订单生成失败！',
+                                timer: 2000
+                            });
+                        }
+                    }
+                })
+            }
+        });
     }
 
     function saveToCart(id) {

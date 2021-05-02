@@ -13,37 +13,75 @@ contract Auctions {
         address payable latestAddress;
         uint highestPrice;//当前最高出价
         bool onBid;//拍卖进行中或已结束
+        mapping (address => uint) pendingReturns;//出价表
     }
     //开始拍卖
-    function start(uint merchid,uint sellerid,uint highestbidderid,uint highestprice,address payable sellerAddress) public returns(bool){
-        auction memory auc=auction(merchid,sellerid,sellerAddress,highestbidderid,0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000,highestprice,true);
-        auctions[merchid]=auc;
+    function start(uint merchId,uint sellerId,address payable sellerAddress) public returns(bool){
+        auction memory auc=auction(merchId,sellerId,sellerAddress,0,0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000,0,true);
+        auctions[merchId]=auc;
         return true;
     }
     //用户参与竞拍
-    function getBid(uint merchid,uint bidderid,uint bidprice) public returns(bool){
-        if(auctions[merchid].highestPrice<bidprice&&auctions[merchid].onBid==true){
-            auctions[merchid].highestPrice=bidprice;
-            auctions[merchid].highestBidderId=bidderid;
-            auctions[merchid].highestAddress=msg.sender;
-            auctions[merchid].latestAddress=msg.sender;
+    function getBid(uint merchId,uint bidderId,uint bidPrice) public payable returns(bool){
+        uint temp;//用来查找出价表的出价
+        uint account;//
+        if(auctions[merchId].highestPrice<bidPrice&&auctions[merchId].onBid==true){
+            auctions[merchId].highestPrice=bidPrice;
+            auctions[merchId].highestBidderId=bidderId;
+            auctions[merchId].highestAddress=msg.sender;
+            if(msg.sender == auctions[merchId].latestAddress){//连续出价，先不退回
+                temp = auctions[merchId].pendingReturns[msg.sender];
+                auctions[merchId].pendingReturns[msg.sender] = bidPrice + temp;
+                auctions[merchId].latestAddress = msg.sender;
+            }else{//不是连续出价，退回Wei给之前的出价者
+                account = auctions[merchId].pendingReturns[auctions[merchId].latestAddress];
+                if(account > 0){
+                    address(auctions[merchId].latestAddress).transfer(account * 10**18);
+                    emit SendEvent(auctions[merchId].latestAddress, account);//日志、
+                    //auctions[merchId].latestAddress.send(account * 10**18);
+                    //auctions[merchId].latestAddress.call.value(account ether)();
+                    auctions[merchId].pendingReturns[auctions[merchId].latestAddress] = 0;//置零
+                    auctions[merchId].pendingReturns[msg.sender] = bidPrice;
+                    auctions[merchId].latestAddress = msg.sender;
+                }else{
+                    auctions[merchId].pendingReturns[msg.sender] = bidPrice;
+                    auctions[merchId].latestAddress = msg.sender;
+                }
+            }
             return true;
         }
         return false;
     }
-    function isChanged(uint merchid,uint bidderid,uint bidprice) public view returns(bool){
-        if(bidderid==auctions[merchid].highestBidderId&&bidprice==auctions[merchid].highestPrice){
+    function isChanged(uint merchId,uint bidderid,uint bidprice) public view returns(bool){
+        if(bidderid==auctions[merchId].highestBidderId&&bidprice==auctions[merchId].highestPrice){
             return true;
         }
         return false;
     }
     //返回指定拍卖信息
-    function getAucInfo(uint merchid) public view returns(uint,uint,uint,bool,address){
-        return (auctions[merchid].merchId,auctions[merchid].highestBidderId,auctions[merchid].highestPrice,auctions[merchid].onBid,auctions[merchid].highestAddress);
+    function getAucInfo(uint merchId) public view returns(uint,uint,uint,bool,address,uint){
+        address addressA = auctions[merchId].latestAddress;
+        uint uu = auctions[merchId].pendingReturns[addressA];
+        return (auctions[merchId].merchId,auctions[merchId].highestBidderId,auctions[merchId].highestPrice,auctions[merchId].onBid,auctions[merchId].latestAddress,uu);
     }
     //结束竞拍
-    function end(uint merchid) public returns(bool){
-        auctions[merchid].onBid=false;
+    function end(uint merchId) public payable returns(bool){
+        auctions[merchId].onBid=false;
+        uint account = auctions[merchId].highestPrice;
+        if(account > 0){
+            address(auctions[merchId].sellerAddress).transfer(account * 10**18);
+            emit SendEvent(auctions[merchId].sellerAddress, account);//log
+            //auctions[merchId].sellerAddress.send(account * 10**18);//给卖家转账
+            auctions[merchId].pendingReturns[auctions[merchId].highestAddress] = 0;
+        }
         return true;
     }
+    //得到账户余额
+    function getBalance(address addr) public returns(address, uint){
+        uint blc = address(addr).balance;
+        emit GetTheBalance(addr, blc);
+        return (addr, blc);
+    }
+    event SendEvent(address, uint);
+    event GetTheBalance(address, uint);
 }

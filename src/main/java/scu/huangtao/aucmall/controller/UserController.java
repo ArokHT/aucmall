@@ -110,6 +110,11 @@ public class UserController {
         }
         int userid = (int) session.getAttribute("UserId");
         Account account = accountService.getOneAccountById(userid);
+        if(account == null){
+            account = new Account();
+            account.setEtheraddress("");
+        }
+        System.out.println("got id == " + userid + "'s account, and value: " + account.getEtheraddress());
         session.setAttribute("Account", account);
         return "mall/personal";
     }
@@ -182,6 +187,29 @@ public class UserController {
         shippingAddressService.deleteAddress(Integer.parseInt(id));
         System.out.println("删除" + id + "ing");
         return "mall/address";
+    }
+    @PostMapping("/addEtherAddr")
+    @ResponseBody
+    public String addEtherAddr(@RequestParam("etherAddress") String etherAddress, HttpSession session){
+        int userid=(int) session.getAttribute("UserId");
+        JSONObject jsonObject = new JSONObject();
+        Account acc = new Account();
+        String msg = "";
+        String type = "";
+        acc.setId(userid);
+        acc.setEtheraddress(etherAddress);
+        int insert = accountService.insert(acc);
+        if(insert==0){
+            type="1";
+            msg="添加失败！";
+        }else {
+            type="2";
+            msg="添加成功！";
+        }
+        jsonObject.put("message", msg);
+        jsonObject.put("type", type);
+        System.out.println(jsonObject.toString());
+        return jsonObject.toString();
     }
 
 

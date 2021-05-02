@@ -10,4 +10,5 @@ public interface ShippingAddressServiceInt {
     public int setDefault(int afterId);
     public int setDefault(int beforeId, int afterId);
     public int deleteAddress(int id);
+    public ShippingAddress getDefaultById(int userid);
 }
