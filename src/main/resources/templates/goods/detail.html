@@ -287,6 +287,27 @@
                 "type": "function"
             },
             {
+                "constant": true,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getSellerAddress",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
                 "constant": false,
                 "inputs": [
                     {
@@ -311,6 +332,27 @@
                 "constant": false,
                 "inputs": [
                     {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "trans",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
                         "internalType": "address",
                         "name": "addr",
                         "type": "address"
@@ -318,6 +360,11 @@
                 ],
                 "name": "getBalance",
                 "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    },
                     {
                         "internalType": "uint256",
                         "name": "",
@@ -328,7 +375,7 @@
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
-        ], '0xd411F13917518a63f613Ac840550FD332bbc2bD3');//这个地方在区块链重新部署后需要修改[]与''
+        ], '0xa635bA25d6ffa8D1131e17e1195e7Ab53572f19F');//这个地方在区块链重新部署后需要修改[]与''
         auctionContract.setProvider(httpProvider);
         auctionContract.methods.getAucInfo(merchId).call().then(function (result){
             if(result[3] == false){

@@ -64,17 +64,26 @@ contract Auctions {
         uint uu = auctions[merchId].pendingReturns[addressA];
         return (auctions[merchId].merchId,auctions[merchId].highestBidderId,auctions[merchId].highestPrice,auctions[merchId].onBid,auctions[merchId].latestAddress,uu);
     }
+    //返回拍卖所有者的地址
+    function getSellerAddress(uint merchId) public view returns(address){
+        return auctions[merchId].sellerAddress;
+    }
     //结束竞拍
     function end(uint merchId) public payable returns(bool){
         auctions[merchId].onBid=false;
+        return true;
+    }
+    //确认收货后进行转账
+    function trans(uint merchId) public payable returns(bool){
         uint account = auctions[merchId].highestPrice;
         if(account > 0){
             address(auctions[merchId].sellerAddress).transfer(account * 10**18);
             emit SendEvent(auctions[merchId].sellerAddress, account);//log
             //auctions[merchId].sellerAddress.send(account * 10**18);//给卖家转账
             auctions[merchId].pendingReturns[auctions[merchId].highestAddress] = 0;
+            return true;
         }
-        return true;
+        return false;
     }
     //得到账户余额
     function getBalance(address addr) public returns(address, uint){

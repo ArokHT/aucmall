@@ -390,4 +390,10 @@
             #{owerid,jdbcType=INTEGER}, #{buyerid,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR},
             '未发货', now(), #{price,jdbcType=INTEGER}, false, false, false,false)
   </insert>
+  <update id="updateByConfirm" parameterType="java.lang.Integer">
+    update mall_orders
+    set status = "已收货",
+        is_received = true
+    where id = #{orderId,jdbcType=INTEGER}
+  </update>
 </mapper>

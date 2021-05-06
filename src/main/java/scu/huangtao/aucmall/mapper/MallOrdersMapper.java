@@ -38,4 +38,5 @@ public interface MallOrdersMapper {
     int selectOrderNum(@Param("userid") int userid);
     int selectSellOrderNum(@Param("userid") int userid);
     int addMallOrder(@Param("merchid")int merchid,@Param("owerid")int owerid,@Param("buyerid")int buyerid,@Param("price")int price,@Param("address")String address);
+    int updateByConfirm(@Param("orderId")int orderId);
 }

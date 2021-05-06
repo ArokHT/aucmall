@@ -98,4 +98,25 @@ public class OrdersController {
         System.out.println(jsonObject.toString());
         return jsonObject.toString();
     }
+    @PostMapping(value = "/confirm")
+    @ResponseBody
+    public String confirm(@RequestBody Map<String, Object> params){
+        int orderId = Integer.parseInt(params.get("orderId").toString());
+        System.out.println("orderId---->" + orderId);
+        int m=ordersService.updateByConfirm(orderId);
+        JSONObject jsonObject = new JSONObject();
+        String msg = "";
+        String type = "";
+        if(m==1){
+            type = "0";
+            msg = "收货成功";
+        }else {
+            type = "1";
+            msg = "收货失败";
+        }
+        jsonObject.put("message", msg);
+        jsonObject.put("type", type);
+        System.out.println(jsonObject.toString());
+        return jsonObject.toString();
+    }
 }

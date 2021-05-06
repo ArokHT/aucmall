@@ -47,4 +47,9 @@ public class OrdersService implements OrdersServiceInt{
     public int addMallOrder(int merchid,int owerid,int buyerid,int price,String address){
         return mallOrdersMapper.addMallOrder(merchid,owerid,buyerid,price,address);
     }
+
+    @Override
+    public int updateByConfirm(int orderId) {
+        return mallOrdersMapper.updateByConfirm(orderId);
+    }
 }

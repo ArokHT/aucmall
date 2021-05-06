@@ -13,6 +13,7 @@ import scu.huangtao.aucmall.service.AccountService;
 import scu.huangtao.aucmall.service.ShippingAddressService;
 import scu.huangtao.aucmall.service.UserService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -212,5 +213,23 @@ public class UserController {
         return jsonObject.toString();
     }
 
+    public String doGet(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        String res = "";
+        if(cookies!=null){
+            for(Cookie cookie : cookies){
+                //获得cookie的名称
+                String cookieName = cookie.getName();
+                if(cookieName.equals("userId")){
+                    //获得该cookie的值
+                    res = cookie.getValue();
+                    String cookieValue = cookie.getValue();
+                    System.out.println(cookieValue);
+                }
+            }
+        }
+        return res;
+
+    }
 
 }

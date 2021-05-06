@@ -327,6 +327,27 @@
                 "type": "function"
             },
             {
+                "constant": true,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getSellerAddress",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
                 "constant": false,
                 "inputs": [
                     {
@@ -336,6 +357,27 @@
                     }
                 ],
                 "name": "end",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "merchId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "trans",
                 "outputs": [
                     {
                         "internalType": "bool",
@@ -373,7 +415,7 @@
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
-        ], '0x2f8303e8E9e8e4CE5B8a7f22E25835E99736475f');//这个地方在区块链重新部署后需要修改[]与''
+        ], '0xa635bA25d6ffa8D1131e17e1195e7Ab53572f19F');//这个地方在区块链重新部署后需要修改[]与''
         auctionContract.setProvider(httpProvider);
         console.log("kaishilema ?");
         console.log(userAddress);
