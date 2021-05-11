@@ -34,6 +34,11 @@ public class OrdersService implements OrdersServiceInt{
     }
 
     @Override
+    public int getMerchId(int orderId) {
+        return mallOrdersMapper.getMerchId(orderId);
+    }
+
+    @Override
     public int getOrdersNum(int uerId) {
         return mallOrdersMapper.selectOrderNum(uerId);
     }
@@ -51,5 +56,15 @@ public class OrdersService implements OrdersServiceInt{
     @Override
     public int updateByConfirm(int orderId) {
         return mallOrdersMapper.updateByConfirm(orderId);
+    }
+
+    @Override
+    public int updateByDeliver(int orderId) {
+        return mallOrdersMapper.updateByDeliver(orderId);
+    }
+
+    @Override
+    public int updateByComment(int orderId, int commentId) {
+        return mallOrdersMapper.updateByComment(orderId, commentId);
     }
 }

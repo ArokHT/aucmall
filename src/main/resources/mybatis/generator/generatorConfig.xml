@@ -39,6 +39,7 @@
         <!--<table tableName="merchandise" domainObjectName="merchandise"/>-->
         <!--<table tableName="browsing_history" domainObjectName="History"/>-->
         <!--<table tableName="Comment" domainObjectName="Comment"/>-->
+        <table tableName="comment" domainObjectName="Comment"/>
         <!--<table tableName="browsing_history" domainObjectName="History"/>-->
         <!--<table tableName="user" domainObjectName="User"/>-->
         <!--<table tableName="account" domainObjectName="Account"/>-->

@@ -31,20 +31,20 @@ contract Auctions {
             auctions[merchId].highestAddress=msg.sender;
             if(msg.sender == auctions[merchId].latestAddress){//连续出价，先不退回
                 temp = auctions[merchId].pendingReturns[msg.sender];
-                auctions[merchId].pendingReturns[msg.sender] = bidPrice + temp;
+                auctions[merchId].pendingReturns[msg.sender] = msg.value + temp;
                 auctions[merchId].latestAddress = msg.sender;
             }else{//不是连续出价，退回Wei给之前的出价者
                 account = auctions[merchId].pendingReturns[auctions[merchId].latestAddress];
                 if(account > 0){
-                    address(auctions[merchId].latestAddress).transfer(account * 10**18);
+                    address(auctions[merchId].latestAddress).transfer(account);
                     emit SendEvent(auctions[merchId].latestAddress, account);//日志、
                     //auctions[merchId].latestAddress.send(account * 10**18);
                     //auctions[merchId].latestAddress.call.value(account ether)();
                     auctions[merchId].pendingReturns[auctions[merchId].latestAddress] = 0;//置零
-                    auctions[merchId].pendingReturns[msg.sender] = bidPrice;
+                    auctions[merchId].pendingReturns[msg.sender] = msg.value;
                     auctions[merchId].latestAddress = msg.sender;
                 }else{
-                    auctions[merchId].pendingReturns[msg.sender] = bidPrice;
+                    auctions[merchId].pendingReturns[msg.sender] = msg.value;
                     auctions[merchId].latestAddress = msg.sender;
                 }
             }
@@ -75,9 +75,9 @@ contract Auctions {
     }
     //确认收货后进行转账
     function trans(uint merchId) public payable returns(bool){
-        uint account = auctions[merchId].highestPrice;
+        uint account = auctions[merchId].pendingReturns[auctions[merchId].latestAddress];
         if(account > 0){
-            address(auctions[merchId].sellerAddress).transfer(account * 10**18);
+            address(auctions[merchId].sellerAddress).transfer(account);
             emit SendEvent(auctions[merchId].sellerAddress, account);//log
             //auctions[merchId].sellerAddress.send(account * 10**18);//给卖家转账
             auctions[merchId].pendingReturns[auctions[merchId].highestAddress] = 0;

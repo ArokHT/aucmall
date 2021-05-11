@@ -214,7 +214,7 @@
     </div>-->
 
     <div id="recommend" style="height: auto">
-        <h2>搜索结果</h2>
+        <h2 th:text="'“'+ ${keyword} + '”搜索结果'">搜索结果</h2>
         <ul style="display: inline">
             <th:block th:if="${#lists.isEmpty(goods)}">
                 <h3>

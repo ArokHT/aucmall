@@ -359,19 +359,25 @@
     select *
     from mall_orders o left join merchandise m on o.merch_id = m.id
     where o.buyer_id=#{userid,jdbcType=INTEGER} and o.is_deleted=false
-    ORDER BY o.deal_price DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+    ORDER BY o.deal_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
   </select>
   <select id="selectSellView" parameterType="scu.huangtao.aucmall.common.domain.MallOrders" resultMap="ViewResultMap">
     select *
     from mall_orders o left join merchandise m on o.merch_id = m.id
     where o.owner_id=#{userid,jdbcType=INTEGER} and o.is_deleted=false
-    ORDER BY o.deal_price DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+    ORDER BY o.deal_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
   </select>
   <select id="selectView1" parameterType="scu.huangtao.aucmall.common.domain.MallOrders" resultMap="ViewResultMap">
     select *
     from mall_orders o left join merchandise m on o.merch_id = m.id
     where o.owner_id=#{userid,jdbcType=INTEGER} and o.is_deleted=false
-    ORDER BY o.deal_price DESC
+    ORDER BY o.deal_time DESC
+  </select>
+
+  <select id="getMerchId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select merch_id
+    from mall_orders
+    where id=#{orderId,jdbcType=INTEGER}
   </select>
 
   <select id="selectOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
@@ -394,6 +400,18 @@
     update mall_orders
     set status = "已收货",
         is_received = true
+    where id = #{orderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByDeliver" parameterType="java.lang.Integer">
+    update mall_orders
+    set status = "未收货",
+        is_delivered = true
+    where id = #{orderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByComment" parameterType="java.lang.Integer">
+    update mall_orders
+    set status = "已评价",
+        comment_id = #{commentId,jdbcType=INTEGER}
     where id = #{orderId,jdbcType=INTEGER}
   </update>
 </mapper>

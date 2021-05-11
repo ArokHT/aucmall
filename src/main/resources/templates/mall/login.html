@@ -122,9 +122,13 @@
                     })
                     window.location.href = "mall/index";
                 } else {
-                    swal(result.message, {
-                        icon: "error",
-                    });
+                    swal({
+                        title: result.message,
+                        //text: 'You clicked the button!',
+                        type: 'error',
+                        timer: 1000,
+                        showConfirmButton: false
+                    })
                 }
                 ;
             },

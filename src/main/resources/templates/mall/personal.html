@@ -25,7 +25,7 @@
                     th:text="${session.User.getNickname()}">newbee-mall</span>
             </div>
             <div class="info_item ml40"><span>手机号</span><span
-                    th:text="${session.User.getNickname()}">newbee-mall</span>
+                    th:text="${session.User.getMail()}">newbee-mall</span>
             </div>
             <div class="info_item ml40"><span>密码</span><span>******</span>
             </div>
@@ -42,9 +42,9 @@
                     </span>
                 </th:block>
             </div>
-            <div class="info_item ml40"><span>收货信息</span><span
+            <!--<div class="info_item ml40"><span>收货信息</span><span
                     th:text="${session.User.getNickname()==''?'无':session.User.getNickname()}">newbee-mall</span></span>
-            </div>
+            </div>-->
             <!--传参数参考这个-->
             <!--<button type="button" class="btn btn-primary" id="default" style="width: 80px" th:onclick="'javascript:setDefault(\''+${address.id}+'\');'">设为默认</button>-->
         </div>
@@ -415,7 +415,7 @@
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
-        ], '0xa635bA25d6ffa8D1131e17e1195e7Ab53572f19F');//这个地方在区块链重新部署后需要修改[]与''
+        ], '0x4D25F1FcdD10Eaa2DcDCB8aB0F60AaA76984083E');//这个地方在区块链重新部署后需要修改[]与''
         auctionContract.setProvider(httpProvider);
         console.log("kaishilema ?");
         console.log(userAddress);

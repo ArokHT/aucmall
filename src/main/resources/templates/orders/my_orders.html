@@ -45,12 +45,12 @@
                                 </th:block>
                                 <th:block th:if="${item.status=='已收货'}">
                                     <span style="margin-left: 50px;">
-                                        <button type="button" class="btn btn-primary" id="toComment" style="width: 60px; background: #eccb1d; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:;'">去评价</button>
+                                        <button type="button" class="btn btn-primary" id="toComment" style="width: 60px; background: #eccb1d; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:goComment('+${item.id}+');'">去评价</button>
                                     </span>
                                 </th:block>
                                 <th:block th:if="${item.status=='未发货'}">
                                     <span style="margin-left: 50px;">
-                                        <button type="button" class="btn btn-primary" id="force" style="width: 60px; background: #45bc4b; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:;'">提醒发货</button>
+                                        <button type="button" class="btn btn-primary" id="force" style="width: 60px; background: #45bc4b; margin-top: 7px; margin-left: 50px;" th:onclick="'javascript:mindSeller();'">提醒发货</button>
                                     </span>
                                 </th:block>
                                 <th:block th:if="${item.status=='已评价'}">
@@ -542,9 +542,22 @@
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
-        ], '0xa635bA25d6ffa8D1131e17e1195e7Ab53572f19F');//这个地方在区块链重新部署后需要修改[]与''
+        ], '0x4D25F1FcdD10Eaa2DcDCB8aB0F60AaA76984083E');//这个地方在区块链重新部署后需要修改[]与''
         auctionContract.setProvider(httpProvider);
     });
+
+    function mindSeller(){
+        swal({
+            type: 'success',
+            html: '我们将会通知卖家尽快发货',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    function goComment(id){
+        window.location.href='/comment?orderId='+id;
+    }
 
     function confirm(id, merchId){
         var data={
@@ -558,7 +571,7 @@
         })
         console.log(id + ' ' + merchId);
 
-        /*$.ajax({
+        $.ajax({
             url : "/confirm",
             type : "POST",
             data : JSON.stringify(data),
@@ -580,7 +593,7 @@
                     });
                 }
             }
-        })*/
+        })
     }
 </script>
 </body>

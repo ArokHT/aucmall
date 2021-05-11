@@ -2,12 +2,12 @@ package scu.huangtao.aucmall.controller;
 
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import scu.huangtao.aucmall.common.domain.MallOrders;
-import scu.huangtao.aucmall.common.domain.OrdersView;
-import scu.huangtao.aucmall.common.domain.ShippingAddress;
+import scu.huangtao.aucmall.common.domain.*;
+import scu.huangtao.aucmall.service.CommentService;
 import scu.huangtao.aucmall.service.GoodsService;
 import scu.huangtao.aucmall.service.OrdersService;
 import scu.huangtao.aucmall.service.ShippingAddressService;
@@ -25,6 +25,8 @@ public class OrdersController {
     ShippingAddressService shippingAddressService;
     @Autowired
     GoodsService goodsService;
+    @Autowired
+    CommentService commentService;
     @GetMapping(value = "/orders")
     public String orders(@RequestParam Map<String, Object> params, HttpSession session, Model model){
         int userid = (int) session.getAttribute("UserId");
@@ -113,6 +115,68 @@ public class OrdersController {
         }else {
             type = "1";
             msg = "收货失败";
+        }
+        jsonObject.put("message", msg);
+        jsonObject.put("type", type);
+        System.out.println(jsonObject.toString());
+        return jsonObject.toString();
+    }
+    @PostMapping(value = "/goDeliver")
+    @ResponseBody
+    public String goDeliver(@RequestBody Map<String, Object> params){
+        int orderId = Integer.parseInt(params.get("orderId").toString());
+        int m=ordersService.updateByDeliver(orderId);
+        JSONObject jsonObject = new JSONObject();
+        String msg = "";
+        String type = "";
+        if(m==1){
+            type = "0";
+            msg = "收货成功";
+        }else {
+            type = "1";
+            msg = "收货失败";
+        }
+        jsonObject.put("message", msg);
+        jsonObject.put("type", type);
+        System.out.println(jsonObject.toString());
+        return jsonObject.toString();
+
+    }
+    @GetMapping(value = "/comment")
+    public String comment(@RequestParam Map<String, Object> params, Model model){
+        int orderId = Integer.parseInt(params.get("orderId").toString());
+        int merchId = ordersService.getMerchId(orderId);
+        Merchandise merch = goodsService.getOneMerchById(merchId).get(0);
+        model.addAttribute("merch", merch);
+        model.addAttribute("orderId", orderId);
+        return "/orders/comment";
+    }
+    @PostMapping(value = "/addComment")
+    @ResponseBody
+    public String addComment(@RequestBody Map<String, String> map){
+        JSONObject jsonObject = new JSONObject();
+        Comment cmt=new Comment();
+        String comment=map.get("comment");
+        String img="/commentImg/"+map.get("image");
+        int stars=Integer.parseInt(map.get("stars"));
+        int orderid=Integer.parseInt(map.get("orderId"));
+        cmt.setComment(comment);
+        cmt.setImg(img);
+        cmt.setStars(stars);
+        cmt.setOrderId(orderid);
+        cmt.setIsDeleted(false);
+        int m=commentService.insert(cmt);
+        int cmtId = commentService.getCommentIdByOrderId(orderid);
+        ordersService.updateByComment(orderid, cmtId);
+        String msg = "";
+        String type = "";
+
+        if(m==1){
+            type = "0";
+            msg = "评价成功";
+        }else {
+            type = "1";
+            msg = "评价失败";
         }
         jsonObject.put("message", msg);
         jsonObject.put("type", type);

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import scu.huangtao.aucmall.common.domain.Account;
@@ -49,7 +50,7 @@ public class UserController {
             type="0";
             msg="用户名不存在或错误！";
         }else {
-            if (userDB.getPassword().equals(password)) {
+            if (DigestUtils.md5DigestAsHex(password.getBytes()).equals(userDB.getPassword())) {
                 type="1";
                 msg="登录成功！即将跳转至首页！";
                 session.setAttribute("User", userDB);
@@ -79,11 +80,13 @@ public class UserController {
         String msg = "";
         String type = "";
 
+        String passwordEncode = DigestUtils.md5DigestAsHex(password.getBytes());
+
         if(userDB!=null){
             type="0";
             msg="用户名已经存在！";
         }else {
-            int insert=userService.register(nickName,loginName,password,sex);
+            int insert=userService.register(nickName,loginName,passwordEncode,sex);
             if(insert==0){
                 type="1";
                 msg="注册失败,请重新尝试注册！";

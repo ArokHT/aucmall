@@ -28,11 +28,13 @@
             <div class="h3 ml20 mt20" th:text="${goodsDetail.name}">NewBeeMall</div>
             <div class="sub_title mr40 ml20 mt10" th:text="${goodsDetail.mark}">NewBeeMall</div>
             <div class="sub_title mr40 ml20 mt10" th:text="${goodsDetail.description}">NewBeeMall</div>
-            <div class="item_price mr40 ml20 mt10" style="float: left">
-                <th:block th:text="${goodsDetail.highestPrice}+'.00 元'"></th:block>
-                <del>
-                    <th:block th:text="${goodsDetail.reservePrice}+'.00 元'"></th:block>
-                </del>
+            <div class="item_price mr40 ml20 mt10" style="float: left; width: 300px;">
+                <span>当前最高出价：</span><span id="curHigheastPrice" style="width: 100px; color: red">暂无</span>
+                <div>
+                    <span style="width: 130px;">每次最少加价：</span><span style="color: red"><th:block th:text="${goodsDetail.leastEachPriceIncrease}+'元'"></th:block></span>
+                </div>
+
+                <span style="width: 130px;">起拍价：</span><th:block th:text="${goodsDetail.reservePrice}+'元'"></th:block>
             </div>
 
             <div class="order">
@@ -375,12 +377,19 @@
                 "stateMutability": "nonpayable",
                 "type": "function"
             }
-        ], '0xa635bA25d6ffa8D1131e17e1195e7Ab53572f19F');//这个地方在区块链重新部署后需要修改[]与''
+        ], '0x4D25F1FcdD10Eaa2DcDCB8aB0F60AaA76984083E');//这个地方在区块链重新部署后需要修改[]与''
         auctionContract.setProvider(httpProvider);
         auctionContract.methods.getAucInfo(merchId).call().then(function (result){
             if(result[3] == false){
                 auctionContract.methods.start(merchId,sellerId,sellerAddress).send({from: sellerAddress, gas: 2000000})
             }
+            var highest = Number(result[2]);
+            if(highest > 0){
+                console.log(highest);
+                $('#curHigheastPrice').html(highest);
+            }
+
+
         });
 
 
@@ -409,7 +418,7 @@
                 console.log("nothing");
                 var val = 0;//接收输入的字符
                 swal({
-                    title: 'Input something',
+                    title: '请出价',
                     input: 'text',
                     showCancelButton: true,
                     inputValidator: function(value) {
@@ -425,12 +434,16 @@
                 }).then(function (){
                     if(Number(val) > 0){
                         var highestPrice = Number(result[2].toString());
-                        var bidPrice = Number(val);
+
+                        var bidPrice = Number(val);//人民币换成ETH
+                        var toEther = bidPrice/22268;
+                        var valueWei = toEther*10**18;
+                        console.log(valueWei);
                         console.log(highestPrice);
-                        console.log(bidPrice);
+                        console.log(toEther);
                         if(bidPrice > reservePrice + leastEachPriceIncrease && bidPrice > highestPrice + leastEachPriceIncrease){
                             console.log("bid with " + bidPrice);
-                            auctionContract.methods.getBid(merchId, userId, bidPrice).send({from: userAddress, value: web3.utils.toWei(bidPrice.toString(), "ether"), gas: 2000000});
+                            auctionContract.methods.getBid(merchId, userId, bidPrice).send({from: userAddress, value: web3.utils.toWei(toEther.toString(), "ether"), gas: 2000000});
                             swal({
                                 type: 'success',
                                 html: '出价成功！ ',
@@ -508,6 +521,20 @@
                 })
             }
         });
+    }
+
+    //说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
+    //调用：accDiv(arg1,arg2)
+    //返回值：arg1除以arg2的精确结果
+    function accDiv(arg1,arg2){
+        var t1=0,t2=0,r1,r2;
+        try{t1=arg1.toString().split(".")[1].length}catch(e){}   //--小数点后的长度
+        try{t2=arg2.toString().split(".")[1].length}catch(e){}  //--小数点后的长度
+        with(Math){
+            r1=Number(arg1.toString().replace(".",""))  //--去除小数点变整数
+            r2=Number(arg2.toString().replace(".",""))  //--去除小数点变整数
+            return (r1/r2)*pow(10,t2-t1);   //---整数相除 在乘上10的平方  小数点的长度
+        }
     }
 
     function saveToCart(id) {
