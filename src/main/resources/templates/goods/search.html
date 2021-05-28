@@ -229,7 +229,7 @@
                             <p class="name" th:text="${good.name}">NewBeeMall</p>
                             <!--<p class="item_price" th:text="${good.mark}">NewBeeMall</p>-->
                             <p class="item_price" th:text="${good.mark.length()>15}?${good.mark.substring(0,15)}+'...' : ${good.mark}">NewBeeMall</p>
-                            <p class="price" style="color: red" th:text="'￥'+${good.reservePrice}">NewBeeMall</p>
+                            <p class="price" style="color: red" th:text="'￥'+${good.reservePrice}+' 起'">NewBeeMall</p>
                         </a>
                     </li>
                 </th:block>

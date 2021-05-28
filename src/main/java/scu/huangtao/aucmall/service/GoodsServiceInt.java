@@ -39,5 +39,8 @@ public interface GoodsServiceInt {
     List<Merchandise> getAllMerchSearch(int userid,String key);
     List<Merchandise> getAllMerchSearch(int page,int limit,int userid,String key);
 
+    int getAllOnsaleMerch(int userid);
+    List<Merchandise> getOnsaleMerch(int page,int limit,int userid);
+
     int updateprice(int merchid,int price);
 }

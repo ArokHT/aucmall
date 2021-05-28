@@ -259,4 +259,30 @@ public class GoodsController {
         model.addAttribute("keyword", keyword);
         return "goods/search";
     }
+
+    @GetMapping("mall/onsale")
+    public String onsale(@RequestParam Map<String, Object> params, HttpSession session, Model model){
+        int userid = (int) session.getAttribute("UserId");
+        int curpage = 1, talpage = 0;
+        int page;
+        //String keyword = params.get("keyword").toString();
+        if (params.get("page") == null) {
+            page = 1;
+        } else {
+            page = Integer.parseInt(params.get("page").toString());
+        }
+        int onsaleAll = goodsService.getAllOnsaleMerch(userid);
+        List<Merchandise> onsaleGoods = goodsService.getOnsaleMerch(page, 20, userid);
+        talpage = onsaleAll % 20 == 0 ? onsaleAll / 20 : onsaleAll / 20 + 1;
+        if (page > 1) {
+            curpage = page;
+        }
+        System.out.println("Total: " + talpage);
+        System.out.println("current: " + curpage);
+        //request.setAttribute("mygoods", mygoods);
+        model.addAttribute("curpage", curpage);
+        model.addAttribute("totalpage", talpage);
+        model.addAttribute("goods", onsaleGoods);
+        return "goods/onSale";
+    }
 }

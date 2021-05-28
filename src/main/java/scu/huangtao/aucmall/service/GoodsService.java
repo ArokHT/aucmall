@@ -101,6 +101,17 @@ public class GoodsService implements GoodsServiceInt{
     }
 
     @Override
+    public int getAllOnsaleMerch(int userid) {
+        return merchandiseMapper.getAllOnsaleMerch(userid);
+    }
+
+    @Override
+    public List<Merchandise> getOnsaleMerch(int page, int limit, int userid) {
+        int index=(page-1)*limit;
+        return merchandiseMapper.getOnsaleMerch(index, limit, userid);
+    }
+
+    @Override
     public List<Merchandise> getAllMerchSearch(int userid,String key) { return merchandiseMapper.getAllMerch1Search(userid,key); }
 
     @Override

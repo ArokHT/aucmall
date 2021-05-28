@@ -60,5 +60,8 @@ public interface MerchandiseMapper {
     List<Merchandise> getAllMerch1Search(@Param("userid")int userid,@Param("key")String key);
     List<Merchandise> getAllMerchSearch(@Param("index") int index,@Param("limit") int limit,@Param("userid")int userid,@Param("key")String key);
 
+    int getAllOnsaleMerch(@Param("userid")int userid);
+    List<Merchandise> getOnsaleMerch(@Param("index") int index,@Param("limit") int limit,@Param("userid")int userid);
+
     int updatePrice(@Param("merchid")int merchid,@Param("price")int price);
 }

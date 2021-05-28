@@ -567,11 +567,34 @@
             console.log(result);
             auctionContract.methods.trans(merchId).send({from:result, gas:2000000}).then(function (res){
                 console.log(res);
+                $.ajax({
+                    url : "/confirm",
+                    type : "POST",
+                    data : JSON.stringify(data),
+                    dataType: 'json',
+                    contentType:'application/json;charset=UTF-8', //contentType很重要
+                    success : function(result) {
+                        if(result.type = "0"){
+                            swal({
+                                type: 'success',
+                                html: '收货成功！',
+                                timer: 2000
+                            });
+                            window.location.reload();
+                        }else{
+                            swal({
+                                type: 'error',
+                                html: '收货失败！',
+                                timer: 2000
+                            });
+                        }
+                    }
+                })
             });
         })
         console.log(id + ' ' + merchId);
 
-        $.ajax({
+        /*$.ajax({
             url : "/confirm",
             type : "POST",
             data : JSON.stringify(data),
@@ -593,7 +616,7 @@
                     });
                 }
             }
-        })
+        })*/
     }
 </script>
 </body>

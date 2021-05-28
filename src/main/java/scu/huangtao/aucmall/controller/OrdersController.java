@@ -146,6 +146,7 @@ public class OrdersController {
     public String comment(@RequestParam Map<String, Object> params, Model model){
         int orderId = Integer.parseInt(params.get("orderId").toString());
         int merchId = ordersService.getMerchId(orderId);
+        System.out.println("merchID: " + merchId);
         Merchandise merch = goodsService.getOneMerchById(merchId).get(0);
         model.addAttribute("merch", merch);
         model.addAttribute("orderId", orderId);

@@ -453,7 +453,7 @@
     select * from merchandise where user_id=#{userid,jdbcType=INTEGER} and is_deleted=false and status = "上架中" ORDER BY added_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
   </select>
   <select id="getOneMerchById" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
-    select * from merchandise where id=#{id,jdbcType=INTEGER} and status = "上架中"
+    select * from merchandise where id=#{id,jdbcType=INTEGER}
   </select>
   <select id="getAllMerch1" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
     select * from merchandise where status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and is_deleted=false ORDER BY added_time DESC
@@ -470,4 +470,11 @@
   <update id="setMerchOffshelf" parameterType="scu.huangtao.aucmall.common.domain.Merchandise">
     update merchandise set status="已下架" where id=#{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getAllOnsaleMerch" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from merchandise where status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and on_sale = true and is_deleted=false ORDER BY added_time DESC
+  </select>
+  <select id="getOnsaleMerch" parameterType="scu.huangtao.aucmall.common.domain.Merchandise" resultMap="BaseResultMap">
+    select * from merchandise where status="上架中" and user_id!=#{userid,jdbcType=INTEGER} and on_sale = true and is_deleted=false  ORDER BY added_time DESC limit #{index,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
 </mapper>
